@@ -2,7 +2,7 @@
 #include "MacUILib.h"
 #include "objPos.h"
 #include "Player.h"
-
+#include "food.h"
 using namespace std;
 
 #define DELAY_CONST 100000 
@@ -21,6 +21,8 @@ Player *playerpointer;
 objPos playerposition;
 GameMechs Game;
 Player player1 = Player(&Game);
+food apple = food(&Game);
+
 
 int main(void)
 {
@@ -49,6 +51,7 @@ void Initialize(void)
     Game = GameMechs();
     playerpointer = &player1;
     playerpointer->getPlayerPos(playerposition);
+    apple.generateFood(playerposition);
 }
 
 void GetInput(void)
@@ -66,7 +69,7 @@ void RunLogic(void)
     player1.updatePlayerDir();
     player1.movePlayer();
     player1.getPlayerPos(playerposition);
-   
+    
     if(Game.getExitFlagStatus()||Game.getLoseFlagStatus())
     {
         exitFlag = true;
@@ -79,9 +82,9 @@ void DrawScreen(void)
 {
     MacUILib_clearScreen();  
 
+    objPos temp;
+    temp = apple.getFoodPos();
     int x,y;
-
-
     for(y = 0; y < Game.getBoardSizeY(); y++){
         for(x = 0; x < Game.getBoardSizeX(); x++)
         {
@@ -93,6 +96,10 @@ void DrawScreen(void)
             {
                 MacUILib_printf("%c", playerposition.getSymbol());
             }
+            else if(temp.pos->x == x && temp.pos->y == y)
+            {
+                MacUILib_printf("%c", temp.symbol);
+            }
             else
             {
                 MacUILib_printf(" ");
@@ -100,7 +107,7 @@ void DrawScreen(void)
         }
         MacUILib_printf("\n");
     }
-    MacUILib_printf("Player: [%d,%d] \n", playerposition.pos->x, playerposition.pos->y);
+    MacUILib_printf("Player: [%d,%d], Food: [%d,%d], Symbol: '%c'  \n", playerposition.pos->x, playerposition.pos->y,temp.pos->x, temp.pos->y, temp.symbol );
 }
 
 void LoopDelay(void)

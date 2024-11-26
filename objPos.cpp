@@ -1,4 +1,5 @@
 #include "objPos.h"
+using namespace std;
 
 objPos::objPos()
 {

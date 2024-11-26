@@ -28,14 +28,7 @@ void Player::getPlayerPos(objPos &returnPos) const
 
 void Player::updatePlayerDir()
 {
-    if(MacUILib_hasChar())
-    {
-        mainGameMechsRef->setInput(MacUILib_getChar());
-    }        // PPA3 input processing logic          
-}
-
-void Player::movePlayer()
-{
+      // PPA3 input processing logic        
     char temp = mainGameMechsRef->getInput();
     if(temp != 0)  // if not null character
         {
@@ -73,11 +66,16 @@ void Player::movePlayer()
                     break;
             }
         
+        
         }
+    mainGameMechsRef->clearInput();
+}
 
+void Player::movePlayer()
+{
     if(myDir == RIGHT)
         {      
-            if(playerPos.pos->x < 18)
+            if(playerPos.pos->x < mainGameMechsRef->getBoardSizeX()-2)
             {
                 playerPos.pos->x++;
             }
@@ -95,10 +93,9 @@ void Player::movePlayer()
         }
         else
         {
-            playerPos.pos->x = 18;
+            playerPos.pos->x = mainGameMechsRef->getBoardSizeX()-2;
         }
     }
-
 
     else if(myDir == UP)
     {      
@@ -108,13 +105,13 @@ void Player::movePlayer()
         }
         else
         {
-            playerPos.pos->y = 8;
+            playerPos.pos->y = mainGameMechsRef->getBoardSizeY()-2;
         }
     }
 
     else if(myDir == DOWN)
     {      
-        if(playerPos.pos->y < 8)
+        if(playerPos.pos->y < mainGameMechsRef->getBoardSizeY()-2)
         {
             playerPos.pos->y++;
         }
@@ -124,7 +121,5 @@ void Player::movePlayer()
         }
     // PPA3 Finite State Machine logic
     }
-    MacUILib_printf("Input: %c", temp);
-    mainGameMechsRef->clearInput();
 }
 // More methods to be added

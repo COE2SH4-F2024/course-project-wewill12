@@ -5,7 +5,7 @@
 
 using namespace std;
 
-#define DELAY_CONST 100000
+#define DELAY_CONST 100000 
 
 bool exitFlag;
 
@@ -18,7 +18,7 @@ void CleanUp(void);
 
 
 Player *playerpointer;
-objPos seen;
+objPos playerposition;
 GameMechs Game;
 Player player1 = Player(&Game);
 
@@ -26,12 +26,6 @@ int main(void)
 {
 
     Initialize();
-
-
-    Game = GameMechs();
-    playerpointer = &player1;
-    playerpointer->getPlayerPos(seen);
-
     while(exitFlag == false)  
     {
         GetInput();
@@ -51,31 +45,42 @@ void Initialize(void)
     MacUILib_clearScreen();
 
     exitFlag = false;
-
-    Game = GameMechs(5,5);
+    
+    Game = GameMechs();
+    playerpointer = &player1;
+    playerpointer->getPlayerPos(playerposition);
 }
 
 void GetInput(void)
 {
-    player1.updatePlayerDir();
-    player1.movePlayer();
-   
+                            //should get input from the user and store it into
+    if(MacUILib_hasChar())  //the game mechanic input
+    {
+        Game.setInput(MacUILib_getChar()); 
+    }
+    MacUILib_printf("%c\n", Game.getInput());
 }
 
 void RunLogic(void)
 {
+    player1.updatePlayerDir();
+    player1.movePlayer();
+    player1.getPlayerPos(playerposition);
+   
     if(Game.getExitFlagStatus()||Game.getLoseFlagStatus())
     {
         exitFlag = true;
     }
-    
+
+    Game.clearInput();
 }
 
 void DrawScreen(void)
 {
-    //MacUILib_clearScreen();  move this back later
+    MacUILib_clearScreen();  
 
     int x,y;
+
 
     for(y = 0; y < Game.getBoardSizeY(); y++){
         for(x = 0; x < Game.getBoardSizeX(); x++)
@@ -84,9 +89,9 @@ void DrawScreen(void)
             {
                 MacUILib_printf("#");
             }
-            else if(seen.pos->x == x && seen.pos->y == y)
+            else if(playerposition.pos->x == x && playerposition.pos->y == y)
             {
-                MacUILib_printf("%c", seen.getSymbol());
+                MacUILib_printf("%c", playerposition.getSymbol());
             }
             else
             {
@@ -95,8 +100,7 @@ void DrawScreen(void)
         }
         MacUILib_printf("\n");
     }
-    MacUILib_printf("Player: [%d,%d] \n", seen.pos->x, seen.pos->y);
-    MacUILib_clearScreen();
+    MacUILib_printf("Player: [%d,%d] \n", playerposition.pos->x, playerposition.pos->y);
 }
 
 void LoopDelay(void)

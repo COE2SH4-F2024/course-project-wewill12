@@ -6,6 +6,8 @@
 //DO COPY CONSTRUCTOR - RULES Minimum 4/6 
 
 
+
+
 objPosArrayList::objPosArrayList()
 {
     arrayCapacity = ARRAY_MAX_CAP; 

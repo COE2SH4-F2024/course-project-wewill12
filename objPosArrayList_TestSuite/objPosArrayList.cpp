@@ -1,102 +1,118 @@
 #include "objPosArrayList.h"
+#include <iostream>
+#include <stdio.h>
 
-// Check lecture contents on general purpose array list construction, 
-// and modify it to support objPos array list construction.
-
-//DO COPY CONSTRUCTOR - RULES Minimum 4/6 
-
-
-
-
+// Paste your Tested implementation here.
+// Paste your Tested implementation here.
+// Paste your Tested implementation here.
 objPosArrayList::objPosArrayList()
 {
     arrayCapacity = ARRAY_MAX_CAP; 
     listSize = 0;
     aList = new objPos[ARRAY_MAX_CAP]; 
-    for (int i=0; i< ARRAY_MAX_CAP - 1; i++){
-        aList[i]= objPos(); 
-    }
-    
-}   
+}
+
 
 objPosArrayList::~objPosArrayList()
 {   
-    int i; 
-    for(i = 0; i < arrayCapacity; i++){
-        removeTail();
-    }
-
     delete[] aList;
-
 }
 
 // copy construct 
-objPosArrayList:objPosArrayList(const objPosArrayList &var){
-    listSize = var.listSize;
-    arrayCapacity = var.listSize;
-
+objPosArrayList::objPosArrayList(const objPosArrayList &a)
+{
+    listSize = a.listSize;
+    arrayCapacity = a.arrayCapacity;
     aList = new objPos[ARRAY_MAX_CAP];
 
-}
-
+    if(this != nullptr)
+    {
+        for(int i = 0; i < arrayCapacity; i++)
+        {
+            aList[i] = a.aList[i];
+        }
+    }
+} 
 // copy assingment operator
+
+objPosArrayList& objPosArrayList::operator=(const objPosArrayList &a)
+{
+    if(this != nullptr)
+    {
+        delete[] aList;
+        listSize = a.listSize;
+        arrayCapacity = a.arrayCapacity;
+        for(int i = 0; i < arrayCapacity; i++)
+        {
+            aList[i] = a.aList[i];
+        }
+    }
+    return *this;
+}
 
 
 int objPosArrayList::getSize() const
 {
-    return arrayCapacity;
-
+    return listSize;
 }
 
 void objPosArrayList::insertHead(objPos thisPos)
 {
-    if(arrayCapacity > 0){
-        for(int i = arrayCapacity; i>0; i--){
-            aList[i-1] = aList[i];
-            listSize++;
-        }
-
-        aList[0] = thisPos;
-
+    if(listSize == arrayCapacity)
+    {
+        return;
     }
-    
+    for(int i = listSize; i > 0; i--){
+        aList[i] = aList[i-1];
+    }
+    printf("thisPos: [%c]\n", thisPos.symbol);
+    aList[0] = thisPos;
+    listSize++;
+
 }
 
 void objPosArrayList::insertTail(objPos thisPos)
 {
-    
     if(listSize >= 0 && listSize < arrayCapacity){
         aList[listSize] = thisPos; 
         listSize++;  
     } 
-    
-    
 }
 
 void objPosArrayList::removeHead()
 {
-    
+    if(listSize == 0)
+    {
+        return;
+    }
+
+    for(int i =  0; i < arrayCapacity-1; i++)
+    {
+        aList[i]= aList[i+1];
+    }
+    listSize--;
 }
 
 void objPosArrayList::removeTail()
 {
-    
+    if(listSize == 0)
+    {
+        return;
+    }
+    listSize--;
 }
 
 objPos objPosArrayList::getHeadElement() const
 {
     return aList[0];
-    
 }
 
 objPos objPosArrayList::getTailElement() const
 {
     return aList[listSize - 1];
-    
 }
 
 objPos objPosArrayList::getElement(int index) const
 {
     return aList[index];
-    
 }

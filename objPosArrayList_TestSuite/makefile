@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-I. -lm -g
 DEPS = *.h
-OBJ = objPos.o objPosArrayList.o testCases.o food.o
+OBJ = objPos.o objPosArrayList.o testCases.o
 
 %.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)

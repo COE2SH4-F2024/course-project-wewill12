@@ -68,11 +68,9 @@ void testInsertHead_1Element()
 
 	objPos currentPos;
 	objPos samplePos(2, 5, 'a');  
-
 	// Insert 1 sample element
 	objPosArrayList thisList;
 	thisList.insertHead(samplePos);
-
 	int expectedSize = 1;
 	int actualSize = thisList.getSize();
 		
@@ -306,7 +304,7 @@ void testRemoveHead_5Element()
 	thisList.insertHead(bodyPos);
 	thisList.insertHead(bodyPos);
 	thisList.insertHead(headPos);
-
+	
 	thisList.removeHead();
 	
 	int expectedSize = 4;

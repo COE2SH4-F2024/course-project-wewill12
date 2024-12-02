@@ -17,6 +17,7 @@ objPos::objPos(int xPos, int yPos, char sym)
     symbol = sym;
 }
 
+//copy constructor
 objPos::objPos(objPos const &p)
 {
     pos = new Pos;
@@ -24,7 +25,7 @@ objPos::objPos(objPos const &p)
     pos->y = p.pos->y;
     symbol = p.symbol;
 }
-
+//copy assignment
 objPos& objPos::operator=(const objPos &p)
 {
     if(this != nullptr)
@@ -35,7 +36,7 @@ objPos& objPos::operator=(const objPos &p)
     }
 }
 
-
+//deletes the allocated Pos object
 objPos::~objPos()
 {
     delete pos;
@@ -48,7 +49,7 @@ objPos::~objPos()
 
 
 
-
+//the rest of these methods are self explanatory 
 void objPos::setObjPos(objPos o)
 {
     pos->x = o.pos->x;

@@ -25,6 +25,8 @@ class GameMechs
     public:
         GameMechs();
         GameMechs(int boardX, int boardY);
+        GameMechs(GameMechs const &game);
+        GameMechs& operator=(GameMechs const &game);
         ~GameMechs(); // is this one needed at all? Why or why not?
         
         bool getExitFlagStatus() const; 
@@ -41,8 +43,14 @@ class GameMechs
         
         int getScore() const;
         void incrementScore();
+
+
         
         // More methods should be added here
+
+        objPos getFoodPos();
+        void setFoodPos(objPos a);
+
 };
 
 #endif

@@ -5,18 +5,19 @@
 // Paste your Tested implementation here.
 // Paste your Tested implementation here.
 // Paste your Tested implementation here.
-objPosArrayList::objPosArrayList()
-{
-    arrayCapacity = ARRAY_MAX_CAP; 
-    listSize = 0;
-    aList = new objPos[ARRAY_MAX_CAP]; 
-}
+    objPosArrayList::objPosArrayList()
+    {
+        arrayCapacity = ARRAY_MAX_CAP; 
+        listSize = 0;        
+        aList = new objPos[ARRAY_MAX_CAP]; 
+    }
 
 
-objPosArrayList::~objPosArrayList()
-{   
-    delete[] aList;
-}
+    objPosArrayList::~objPosArrayList()
+    {   
+        delete[] aList;
+        aList = nullptr;
+    }
 
 // copy construct 
 objPosArrayList::objPosArrayList(const objPosArrayList &a)
@@ -39,7 +40,6 @@ objPosArrayList& objPosArrayList::operator=(const objPosArrayList &a)
 {
     if(this != nullptr)
     {
-        delete[] aList;
         listSize = a.listSize;
         arrayCapacity = a.arrayCapacity;
         for(int i = 0; i < arrayCapacity; i++)
@@ -65,7 +65,6 @@ void objPosArrayList::insertHead(objPos thisPos)
     for(int i = listSize; i > 0; i--){
         aList[i] = aList[i-1];
     }
-    printf("thisPos: [%c]\n", thisPos.symbol);
     aList[0] = thisPos;
     listSize++;
 

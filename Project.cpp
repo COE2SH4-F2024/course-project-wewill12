@@ -16,12 +16,10 @@ void DrawScreen(void);
 void LoopDelay(void);
 void CleanUp(void);
 
+Player* player1;
+GameMechs* Game;
+food * apple;
 
-Player *playerpointer;
-objPos playerposition;
-GameMechs Game;
-Player player1 = Player(&Game);
-food apple = food(&Game);
 
 
 int main(void)
@@ -47,67 +45,110 @@ void Initialize(void)
     MacUILib_clearScreen();
 
     exitFlag = false;
+
+    Game = new GameMechs();
+    player1 = new Player(Game);
+    apple = new food(Game);
+
+
+    objPosArrayList* playerPosList = player1->getPlayerPos();
+
+    apple->generateFood(*playerPosList);
     
-    Game = GameMechs();
-    playerpointer = &player1;
-    playerpointer->getPlayerPos(playerposition);
-    apple.generateFood(playerposition);
+    objPos temp = apple->getFoodPos();
+    Game->setFoodPos(temp);
 }
 
 void GetInput(void)
 {
-                            //should get input from the user and store it into
-    if(MacUILib_hasChar())  //the game mechanic input
+    //the same input processing logic
+    if(MacUILib_hasChar()) 
     {
-        Game.setInput(MacUILib_getChar()); 
+       Game->setInput(MacUILib_getChar()); 
     }
-    MacUILib_printf("%c\n", Game.getInput());
 }
 
 void RunLogic(void)
 {
-    player1.updatePlayerDir();
-    player1.movePlayer();
-    player1.getPlayerPos(playerposition);
+    //assigning the objPosArrayList from the player object and assigning it into a pointer to access it
+    objPosArrayList* playerPosList = player1->getPlayerPos();
+    player1->updatePlayerDir();
+    player1->movePlayer();
     
-    if(Game.getExitFlagStatus()||Game.getLoseFlagStatus())
+    //after the logic has moved the player, check to see if there was a self collision or if user has exited the game
+    if(player1->checkSelfCollision())
+    {
+        Game->setLoseFlag();
+        exitFlag = true;       
+    }
+
+    else if(Game->getExitFlagStatus())
     {
         exitFlag = true;
     }
 
-    Game.clearInput();
+
+    //Checking to see if food was consumed, and if true then increase score and generate new food pos 
+    if(player1->checkFoodConsumption() == true)
+    {
+        Game->incrementScore();
+        apple->generateFood(*playerPosList);    
+        Game->setFoodPos(apple->getFoodPos());
+    }
+    Game->clearInput();
 }
 
 void DrawScreen(void)
 {
-    MacUILib_clearScreen();  
-
-    objPos temp;
-    temp = apple.getFoodPos();
+    MacUILib_clearScreen();
+    
+    //initialize all the varaibles that will be accessed here
+    objPosArrayList* playerPosList = player1->getPlayerPos();
+    objPos temp = playerPosList->getHeadElement();
+    objPos tempFood = apple->getFoodPos();
+    bool flag;
     int x,y;
-    for(y = 0; y < Game.getBoardSizeY(); y++){
-        for(x = 0; x < Game.getBoardSizeX(); x++)
-        {
-            if(x == 0 || x == Game.getBoardSizeX() - 1 || y == 0 || y == Game.getBoardSizeY() - 1)
+
+    MacUILib_printf("Food [%d,%d],\n",Game->getFoodPos().pos->x, Game->getFoodPos().pos->y);
+    MacUILib_printf("Player [%d,%d], Score: %d\n", temp.pos->x,temp.pos->y, Game->getScore());
+
+    //Use a triple loop with a flag to print out all parts of the snake
+    for(y = 0; y < Game->getBoardSizeY(); y++){
+        for(x = 0; x < Game->getBoardSizeX(); x++){
+
+            flag = false;
+
+            for(int z = 0; z < playerPosList->getSize(); z++){
+
+                temp = playerPosList->getElement(z);
+                if(temp.pos->x == x && temp.pos->y == y) // snake printer
+                {
+                    MacUILib_printf("%c", temp.symbol);
+                    flag = true; //the purpose of the flag is to prevent more elements than the bordersize to print
+                    break;   
+                }
+            }
+
+            if(tempFood.pos->x == x && tempFood.pos->y == y && flag == false) //food printer 
+            {
+                MacUILib_printf("%c", tempFood.symbol);
+                flag = true;
+            }
+
+            else if(x == 0 || x == Game->getBoardSizeX() - 1 || y == 0 || y == Game->getBoardSizeY() - 1) //border printer
             {
                 MacUILib_printf("#");
+                flag = true;
             }
-            else if(playerposition.pos->x == x && playerposition.pos->y == y)
-            {
-                MacUILib_printf("%c", playerposition.getSymbol());
-            }
-            else if(temp.pos->x == x && temp.pos->y == y)
-            {
-                MacUILib_printf("%c", temp.symbol);
-            }
-            else
+
+            else if(flag == false) //empty space printer
             {
                 MacUILib_printf(" ");
             }
-        }
-        MacUILib_printf("\n");
+
+            }
+            MacUILib_printf("\n");
     }
-    MacUILib_printf("Player: [%d,%d], Food: [%d,%d], Symbol: '%c'  \n", playerposition.pos->x, playerposition.pos->y,temp.pos->x, temp.pos->y, temp.symbol );
 }
 
 void LoopDelay(void)
@@ -118,7 +159,23 @@ void LoopDelay(void)
 
 void CleanUp(void)
 {
-    MacUILib_clearScreen();    
+    MacUILib_clearScreen(); 
+
+    if(Game->getLoseFlagStatus())
+    {
+        MacUILib_printf("You Lost");
+    }
+
+    else if(Game->getExitFlagStatus())
+    {
+        MacUILib_printf("You Quit");
+    }
+
+    //dealllocate all the memory that was allocated in the beginning
+    delete Game;
+    delete player1;
+    delete apple;
+
 
     MacUILib_uninit();
 }

@@ -2,26 +2,23 @@
 #include <iostream>
 #include <stdio.h>
 
-// Paste your Tested implementation here.
-// Paste your Tested implementation here.
-// Paste your Tested implementation here.
-objPosArrayList::objPosArrayList()
-{
-    arrayCapacity = ARRAY_MAX_CAP; 
-    listSize = 0;
-    aList = new objPos[ARRAY_MAX_CAP]; 
-}
+    objPosArrayList::objPosArrayList()
+    {
+        arrayCapacity = ARRAY_MAX_CAP; 
+        listSize = 0;        
+        aList = new objPos[ARRAY_MAX_CAP]; 
+    }
 
 
-objPosArrayList::~objPosArrayList()
-{   
-    delete[] aList;
-}
+    objPosArrayList::~objPosArrayList()
+    {   
+        delete[] aList;
+        aList = nullptr;
+    }
 
 // copy construct 
 objPosArrayList::objPosArrayList(const objPosArrayList &a)
 {
-    listSize = a.listSize;
     arrayCapacity = a.arrayCapacity;
     aList = new objPos[ARRAY_MAX_CAP];
 
@@ -32,14 +29,14 @@ objPosArrayList::objPosArrayList(const objPosArrayList &a)
             aList[i] = a.aList[i];
         }
     }
+    listSize = a.listSize;
+
 } 
 // copy assingment operator
-
 objPosArrayList& objPosArrayList::operator=(const objPosArrayList &a)
 {
     if(this != nullptr)
     {
-        delete[] aList;
         listSize = a.listSize;
         arrayCapacity = a.arrayCapacity;
         for(int i = 0; i < arrayCapacity; i++)
@@ -56,6 +53,7 @@ int objPosArrayList::getSize() const
     return listSize;
 }
 
+//moves all the elements over and inserts an element at the head
 void objPosArrayList::insertHead(objPos thisPos)
 {
     if(listSize == arrayCapacity)
@@ -65,12 +63,12 @@ void objPosArrayList::insertHead(objPos thisPos)
     for(int i = listSize; i > 0; i--){
         aList[i] = aList[i-1];
     }
-    printf("thisPos: [%c]\n", thisPos.symbol);
     aList[0] = thisPos;
     listSize++;
 
 }
 
+//inserts a tail object
 void objPosArrayList::insertTail(objPos thisPos)
 {
     if(listSize >= 0 && listSize < arrayCapacity){
@@ -79,6 +77,7 @@ void objPosArrayList::insertTail(objPos thisPos)
     } 
 }
 
+//removes the 0th element by shifting everything over (overwriting the 0th element)
 void objPosArrayList::removeHead()
 {
     if(listSize == 0)
@@ -93,6 +92,7 @@ void objPosArrayList::removeHead()
     listSize--;
 }
 
+//simply reduces the list size
 void objPosArrayList::removeTail()
 {
     if(listSize == 0)
@@ -102,6 +102,7 @@ void objPosArrayList::removeTail()
     listSize--;
 }
 
+//the rest are self explanatory
 objPos objPosArrayList::getHeadElement() const
 {
     return aList[0];

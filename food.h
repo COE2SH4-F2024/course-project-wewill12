@@ -4,6 +4,7 @@
 #include <iostream>
 #include "objPos.h"
 #include "GameMechs.h"
+#include "objPosArrayList.h"
 
 
 
@@ -11,9 +12,13 @@ class food
 {
     public:
         food(GameMechs* reference);
+        food(food const &b);
+        food& operator=(food const &a);
         ~food();
-        void generateFood(objPos blockOff);
+        
+        void generateFood(objPosArrayList blockOff);
         objPos getFoodPos() const;
+        void setFood(food a);
         
 
     private:

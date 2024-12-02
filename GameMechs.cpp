@@ -21,23 +21,49 @@ GameMechs::GameMechs(int boardX, int boardY)
     boardSizeY = boardY;
 }
 
-// do you need a destructor?
+//Copy constructor
+GameMechs::GameMechs(GameMechs const &game)
+{
+    input = game.input;
+    exitFlag = game.exitFlag;
+    loseFlag = game.loseFlag;
+    score = game.score;
+    boardSizeX = game.boardSizeX;
+    boardSizeY = game.boardSizeY;
+}
+
+//Copy assignment 
+GameMechs& GameMechs::operator=(GameMechs const &game)
+{
+    if(this  != nullptr)
+    {
+        input = game.input;
+        exitFlag = game.exitFlag;
+        loseFlag = game.loseFlag;
+        score = game.score;
+        boardSizeX = game.boardSizeX;
+        boardSizeY = game.boardSizeY;
+    }
+    return *this;
+}
+
+// No destructor needed as there is nothing new being allocated
 GameMechs::~GameMechs()
 {
     
 }
 
+
+//the rest of the methods are self explanatory 
 bool GameMechs::getExitFlagStatus() const
 {
     return exitFlag;
-
 }
 
 bool GameMechs::getLoseFlagStatus() const
 {
     return loseFlag;
-}
-    
+}   
 
 char GameMechs::getInput() const
 {
@@ -64,7 +90,6 @@ int GameMechs::getBoardSizeY() const
     return boardSizeY;
 }
 
-
 void GameMechs::setExitTrue()
 {
     exitFlag = 1;
@@ -86,3 +111,16 @@ void GameMechs::clearInput()
 }
 
 // More methods should be added here
+
+objPos GameMechs::getFoodPos()
+{
+    return food;
+}
+
+void GameMechs::setFoodPos(objPos a)
+{
+    food.pos->x = a.pos->x;
+    food.pos->y = a.pos->y;
+    food.symbol = a.symbol;
+}
+
